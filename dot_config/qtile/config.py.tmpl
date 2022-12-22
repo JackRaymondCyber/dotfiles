@@ -103,8 +103,8 @@ keys = [
     {{- else }}
     Key([mod], 'Home', lazy.spawn("rofi -show scripts")),
     Key([], 'Home', show_box),
-    Key([mod, "shift"], "space", lazy.window.toggle_floating()),
     {{- end }}
+    Key([mod, "shift"], "space", lazy.window.toggle_floating()),
 ]
 
 groups = [Group(i) for i in "123456789"]
