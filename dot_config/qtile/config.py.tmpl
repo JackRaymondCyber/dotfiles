@@ -97,9 +97,14 @@ keys = [
     Key([], 'XF86AudioRaiseVolume', lazy.spawn("pamixer -i 2")),
     Key([], 'XF86AudioLowerVolume', lazy.spawn("pamixer -d 2")),
     Key([], 'XF86AudioMute', lazy.spawn("amixer sset Master 0%")),
+    {{- if eq .chezmoi.hostname "t480s" }}
     Key([], 'XF86Tools', lazy.spawn("rofi -show scripts")),
     Key([], 'XF86Favorites', show_box),
+    {{- else }}
+    Key([mod], 'Home', lazy.spawn("rofi -show scripts")),
+    Key([], 'Home', show_box),
     Key([mod, "shift"], "space", lazy.window.toggle_floating()),
+    {{- end }}
 ]
 
 groups = [Group(i) for i in "123456789"]
@@ -131,6 +136,7 @@ groups[0].matches=[Match(wm_class=('firefox'))]
 groups[3].matches=[Match(wm_class=('Emacs'))]
 #groups[3].exclusive=True
 groups[4].matches=[Match(wm_class=('wpp')),Match(wm_class=('wps')),Match(wm_class=('et'))]
+groups[5].matches=[Match(wm_class=('looking-glass-client'))]
 
 for i in groups:
     keys.extend(
@@ -174,15 +180,24 @@ layouts = [
 
 widget_defaults = dict(
     font="FiraCode Nerd Font",
+    {{- if eq .chezmoi.hostname "t480s" }}
     fontsize=26,
     padding=10,
+    {{- else }}
+    fontsize=18,
+    padding=3,
+    {{- end }}
     background=colors[0]
 )
 extension_defaults = widget_defaults.copy()
 
 wbox=widget.WidgetBox(widgets=[
     widget.Sep(),
+    {{- if eq .chezmoi.hostname "t480s" }}
     widget.Systray(icon_size=35),
+    {{- else }}
+    widget.Systray(icon_size=24),
+    {{- end }}
     widget.Sep(),
     widget.Pomodoro(fmt='{}', color_inactive='ffffff', prefix_inactive='  '),
     widget.Sep(),
@@ -219,7 +234,11 @@ screens = [
                 widget.GroupBox(hide_unused=True, spacing=0, this_current_screen_border=colors[2],disable_drag=True),
                 widget.Prompt(),
                 #widget.WindowName(max_chars=30),
+                {{- if eq .chezmoi.hostname "t480s" }}
                 widget.TaskList(max_title_width=400,icon_size=35,border=colors[2]),
+                {{- else }}
+                widget.TaskList(max_title_width=400,icon_size=24,border=colors[2]),
+                {{- end }}
                 widget.Chord(
                     chords_colors={
                         "launch": ("#ff0000", "#ffffff"),
@@ -228,14 +247,20 @@ screens = [
                 ),
                 wbox,
                 widget.Sep(),
+                {{- if eq .chezmoi.hostname "t480s" }}
                 widget.Wlan(interface="wlp61s0",format=" {percent:2.0%}"),
+                {{- else }}
+                widget.Wlan(interface="wlp5s0",format=" {percent:2.0%}"),
+                {{- end }}
                 widget.Sep(),
                 widget.Memory(format='{MemPercent: .0f}%'),
                 widget.Sep(),
                 widget.CPU(format=' {load_percent:02.0f}%'),
                 widget.Sep(),
+                {{- if eq .chezmoi.hostname "t480s" }}
                 widget.Battery(format='{char} {percent:2.0%}',unknown_char='',full_char='', charge_char='', discharge_char=''),
                 widget.Sep(),
+                {{- end }}
                 #widget.Volume(fmt="墳 {}",update_interval=0.1, get_volume_command='pamixer --get-volume'),
                 Volume(
                     **widget_defaults,
@@ -261,12 +286,87 @@ screens = [
                 widget.Sep(),
                 widget.Clock(format=" %I:%M"),
             ],
+            {{- if eq .chezmoi.hostname "t480s" }}
             55,
+            {{- else }}
+            32,
+            {{- end }}
             opacity=0.9,
             # border_width=[2, 0, 2, 0],  # Draw top and bottom borders
             # border_color=["ff00ff", "000000", "ff00ff", "000000"]  # Borders are magenta
         ),
     ),
+    {{- if eq .chezmoi.hostname "mbox" }}
+    Screen(
+        bottom=bar.Bar(
+            [
+                widget.CurrentLayoutIcon(scale=0.8),
+                widget.GroupBox(hide_unused=True, spacing=0, this_current_screen_border=colors[2],disable_drag=True),
+                widget.Prompt(),
+                #widget.WindowName(max_chars=30),
+                {{- if eq .chezmoi.hostname "t480s" }}
+                widget.TaskList(max_title_width=400,icon_size=35,border=colors[2]),
+                {{- else }}
+                widget.TaskList(max_title_width=400,icon_size=24,border=colors[2]),
+                {{- end }}
+                widget.Chord(
+                    chords_colors={
+                        "launch": ("#ff0000", "#ffffff"),
+                    },
+                    name_transform=lambda name: name.upper(),
+                ),
+                wbox,
+                widget.Sep(),
+                {{- if eq .chezmoi.hostname "t480s" }}
+                widget.Wlan(interface="wlp61s0",format=" {percent:2.0%}"),
+                {{- else }}
+                widget.Wlan(interface="wlp5s0",format=" {percent:2.0%}"),
+                {{- end }}
+                widget.Sep(),
+                widget.Memory(format='{MemPercent: .0f}%'),
+                widget.Sep(),
+                widget.CPU(format=' {load_percent:02.0f}%'),
+                widget.Sep(),
+                {{- if eq .chezmoi.hostname "t480s" }}
+                widget.Battery(format='{char} {percent:2.0%}',unknown_char='',full_char='', charge_char='', discharge_char=''),
+                widget.Sep(),
+                {{- end }}
+                #widget.Volume(fmt="墳 {}",update_interval=0.1, get_volume_command='pamixer --get-volume'),
+                Volume(
+                    **widget_defaults,
+                    fmt = " {}",
+                    # Control volume with pactl
+                    # get_volume_command = "pactl get-sink-volume @DEFAULT_SINK@",
+                    # check_mute_command = "pactl get-sink-mute @DEFAULT_SINK@",
+                    # check_mute_string = "yes",
+                    # volume_up_command = "pactl set-sink-volume @DEFAULT_SINK@ +2%",
+                    # volume_down_command = "pactl set-sink-volume @DEFAULT_SINK@ -2%",
+                    # mute_command = "pactl set-sink-mute @DEFAULT_SINK@ toggle",
+                    # Control volume with pamixer
+                    get_volume_command = "pamixer --get-volume-human",
+                    check_mute_command = "pamixer --get-mute",
+                    check_mute_string = "true",
+                    volume_up_command = "pamixer -i 2",
+                    volume_down_command = "pamixer -d 2",
+                    mute_command = "pamixer -t",
+                    mouse_callbacks = {'Button3': lambda: qtile.cmd_spawn("easyeffects")}
+                ),
+                widget.Sep(),
+                widget.Clock(format=" %m/%d"),
+                widget.Sep(),
+                widget.Clock(format=" %I:%M"),
+            ],
+            {{- if eq .chezmoi.hostname "t480s" }}
+            55,
+            {{- else }}
+            32,
+            {{- end }}
+            opacity=0.9,
+            # border_width=[2, 0, 2, 0],  # Draw top and bottom borders
+            # border_color=["ff00ff", "000000", "ff00ff", "000000"]  # Borders are magenta
+        ),
+    ),
+    {{- end }}
 ]
 
 

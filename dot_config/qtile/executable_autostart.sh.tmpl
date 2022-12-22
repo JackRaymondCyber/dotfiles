@@ -7,8 +7,10 @@ nm-applet &
 cd /home/zam/gitz/ff2mpv/; ./install.sh firefox; cd &
 xfce4-power-manager &
 $HOME/.config/wpg/wp_init.sh &
-variety & 
+variety &
+{{- if eq .chezmoi.hostname "t480s" }}
 xrandr --output eDP-1 --primary &
+{{- end }}
 redshift -l 33.76:-118.14 &
 alttab -w 1 -d 1 -t 256x300 -i 254x128 -font "xft:DejaVu Sans Condensed-10" & # -bg "$color0" -fg "$color15" -frame "$color1" -border "$color15"
 firefox &
@@ -16,4 +18,13 @@ dunst &
 /usr/bin/emacs --daemon
 emacsclient -c &
 #prime-offload; sleep 1;
+{{- if eq .chezmoi.hostname "t480s" }}
 optimus-manager-qt &
+{{- end }}
+{{- if eq .chezmoi.hostname "mbox" }}
+nvidia_attatched="$(prime-run glxinfo | grep "OpenGL renderer")" &
+if [[ $nvidia_attatched != "OpenGL renderer string: NVIDIA GeForce GTX 760/PCIe/SSE2" ]]
+then
+    looking-glass-client -c DXGI &
+fi
+{{- end }}
