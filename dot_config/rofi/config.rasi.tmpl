@@ -1,6 +1,11 @@
 configuration {
 	modi: "window,run,drun,scripts:/home/zam/.local/bin/scripts,filebrowser";
+	{{- if eq .chezmoi.hostname "mbox" }}
+	font: "mono 20";	
+	{{- end }}
+	{{- if eq .chezmoi.hostname "t480s" }}
 	font: "mono 30";
+	{{- end }}
 /*	location: 0;*/
 /*	yoffset: 0;*/
 /*	xoffset: 0;*/
