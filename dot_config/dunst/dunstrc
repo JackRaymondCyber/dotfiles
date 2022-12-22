@@ -1,6 +1,6 @@
 [colors]
-	background = "#3D5F81"
-	foreground = "#ede8e3"
+	background = "#B5AEA8"
+	foreground = "#eae3dc"
 
 [global]
     ### Display ###
@@ -16,7 +16,7 @@
     horizontal_padding = 12
     frame_width = 3
 
-    frame_color = "#C4B1A2"
+    frame_color = "#E6D0B9"
     separator_color = auto
     sort = yes
     idle_threshold = 120
@@ -76,5 +76,5 @@
     timeout = 10
 
 [urgency_critical]
-    frame_color = "#3D5F81"
+    frame_color = "#B5AEA8"
     timeout = 0
